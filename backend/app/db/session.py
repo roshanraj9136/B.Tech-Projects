@@ -25,7 +25,8 @@ if db_url:
         pool_pre_ping=True,
         pool_size=10,
         max_overflow=20,
-        pool_recycle=300
+        pool_recycle=300,
+        connect_args={"connect_timeout": 5}
     )
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 else:
@@ -33,21 +34,31 @@ else:
     SessionLocal = None
 
 def init_db():
-    """Initializes schema tables in Neon PostgreSQL on application startup."""
-    global engine
-    if not engine:
-        url = get_database_url()
-        if url:
-            engine = create_engine(url, pool_pre_ping=True, pool_size=10, max_overflow=20)
-            from app.db.models import Base
-            Base.metadata.create_all(bind=engine)
-            logger.info("[Neon] Successfully initialized database tables in Neon PostgreSQL.")
-        else:
-            logger.info("[Neon] DATABASE_URL not set; running with local file-based storage.")
-    else:
+    """Initializes schema tables in Neon PostgreSQL on application startup with resilient error handling."""
+    global engine, SessionLocal
+    url = get_database_url()
+    if not url:
+        logger.info("[Neon] DATABASE_URL not set; running with local file-based storage.")
+        return
+
+    try:
+        if not engine:
+            engine = create_engine(
+                url,
+                pool_pre_ping=True,
+                pool_size=10,
+                max_overflow=20,
+                pool_recycle=300,
+                connect_args={"connect_timeout": 5}
+            )
+            SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
         from app.db.models import Base
         Base.metadata.create_all(bind=engine)
         logger.info("[Neon] Successfully initialized database tables in Neon PostgreSQL.")
+    except Exception as e:
+        logger.warning(f"[Neon] Database connection/initialization failed during startup: {e}. Falling back to local storage mode.")
+
 
 def get_db() -> Generator[Optional[Session], None, None]:
     """Dependency for obtaining a database session."""

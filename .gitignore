@@ -34,6 +34,8 @@ backend/storage/temporary/*
 Thumbs.db
 *.tmp
 .neon
+.vercel
+frontend/.vercel
 .env
 .env.*
 !.env.example

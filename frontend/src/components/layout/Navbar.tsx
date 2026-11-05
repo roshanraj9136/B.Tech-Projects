@@ -76,10 +76,13 @@ export const Navbar: React.FC = () => {
         <div className="flex items-center gap-3">
           {/* Neon Database indicator badge */}
           {healthStatus?.database?.connected && (
-            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs shadow-sm" title="Connected to Neon Lakebase Postgres">
+            <div 
+              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs shadow-sm" 
+              title={`Connected to Neon Lakebase Postgres${healthStatus.database?.latency_ms ? ` (${Math.round(healthStatus.database.latency_ms)}ms)` : ''}`}
+            >
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
               <span className="text-emerald-400 font-mono text-[10px]">
-                Neon Postgres
+                Neon Postgres{healthStatus.database?.latency_ms ? ` (${Math.round(healthStatus.database.latency_ms)}ms)` : ''}
               </span>
             </div>
           )}

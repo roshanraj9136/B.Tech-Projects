@@ -136,7 +136,7 @@ Instead of merely outputting **REAL** or **FAKE**, the platform explains the mod
 │   │   ├── region_analysis.py   # 16×16 patch-to-region mapping & heatmaps
 │   │   ├── clip_aggregation.py  # Video-level aggregation & dynamic explanation
 │   │   └── quality_assessment.py# Laplacian blur, compression, exposure audit
-│   ├── storage/                 # Local filesystem storage (NO database)
+│   ├── storage/                 # Local filesystem storage & Neon Serverless PostgreSQL persistence
 │   │   ├── uploads/             # Received video files
 │   │   ├── processed/           # Completed analysis JSON records
 │   │   ├── reports/             # Generated PDF audit reports
