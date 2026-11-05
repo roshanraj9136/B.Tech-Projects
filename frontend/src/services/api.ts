@@ -2,7 +2,10 @@ import axios from 'axios';
 import type { VideoMetadata, AnalysisStatus, AnalysisResult, SampleVideo, HealthResponse } from '../types';
 import { BENCHMARK_SAMPLES } from '../data/benchmarkData';
 
-const API_BASE = import.meta.env.VITE_API_URL || '/api';
+const rawApiUrl = import.meta.env.VITE_API_URL;
+const API_BASE = rawApiUrl
+  ? (rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl.replace(/\/+$/, '')}/api`)
+  : '/api';
 
 const DEFAULT_SAMPLES: SampleVideo[] = [
   {
